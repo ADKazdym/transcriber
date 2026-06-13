@@ -381,6 +381,13 @@
       <button class="btn btn-ghost" id="saveKey">Сохранить</button>
     </div>
     <div class="key-status no" id="keyStatus">Ключ не сохранён</div>
+    <div style="margin-top:10px;">
+      <button class="btn btn-ghost" id="checkLimitBtn" style="font-size:13px;padding:8px 14px;">
+        Проверить лимит
+      </button>
+    </div>
+    <div id="limitBox" style="display:none;margin-top:10px;padding:12px 14px;border-radius:8px;font-family:-apple-system,sans-serif;font-size:13px;border:1px solid var(--border);background:var(--bg);">
+    </div>
   </div>
 
   <!-- Upload -->
@@ -741,6 +748,103 @@ document.getElementById('newBtn').addEventListener('click', () => {
   updateStartBtn();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+// --- Limit Check ---
+document.getElementById('checkLimitBtn').addEventListener('click', checkLimit);
+
+async function checkLimit() {
+  const key = getKey();
+  if (!key) {
+    showLimitBox('error', 'Сначала введи API ключ');
+    return;
+  }
+
+  const btn = document.getElementById('checkLimitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Проверяю...';
+  showLimitBox('loading', '<span class="spinner"></span> Запрашиваю данные...');
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/models', {
+      headers: { 'Authorization': `Bearer ${key}` }
+    });
+
+    if (res.status === 401) {
+      showLimitBox('error', '❌ Ключ недействителен — проверь или создай новый на console.groq.com');
+      btn.disabled = false;
+      btn.textContent = 'Проверить лимит';
+      return;
+    }
+
+    // Groq не даёт прямой endpoint для лимитов — делаем тестовый запрос с коротким аудио
+    // Вместо этого используем заголовки ответа от реального запроса
+    // Для проверки лимита отправим пустой запрос и смотрим на заголовки
+    const testRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${key}` },
+      body: new FormData() // пустой — вернёт ошибку но с заголовками лимитов
+    });
+
+    const remaining = testRes.headers.get('x-ratelimit-remaining-audio-seconds');
+    const limit = testRes.headers.get('x-ratelimit-limit-audio-seconds');
+    const reset = testRes.headers.get('x-ratelimit-reset-audio-seconds');
+
+    if (remaining !== null && limit !== null) {
+      const rem = parseInt(remaining);
+      const lim = parseInt(limit);
+      const used = lim - rem;
+      const pct = Math.round((rem / lim) * 100);
+      const remMin = Math.floor(rem / 60);
+      const resetMin = reset ? Math.ceil(parseInt(reset) / 60) : null;
+
+      const color = pct > 50 ? '#3d6b4f' : pct > 20 ? '#b07d20' : '#c0392b';
+      const bar = `<div style="height:6px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.3s;"></div>
+      </div>`;
+
+      let resetText = resetMin ? `Сбросится через ~${resetMin} мин` : '';
+      let html = `
+        <div style="font-weight:500;color:var(--text);margin-bottom:6px;">Лимит аудио (в час)</div>
+        ${bar}
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Осталось: <strong style="color:${color}">${remMin} мин (${pct}%)</strong></span>
+          <span style="color:var(--text-muted);">Всего: ${Math.floor(lim/60)} мин</span>
+        </div>
+        ${resetText ? `<div style="color:var(--text-muted);margin-top:5px;">⏱ ${resetText}</div>` : ''}
+        ${rem < 600 ? `<div style="color:#c0392b;margin-top:6px;">⚠️ Меньше 10 минут — подожди сброса перед длинной записью</div>` : ''}
+        ${rem >= 9300 ? `<div style="color:#3d6b4f;margin-top:6px;">✓ Достаточно для записи 2.5 часа</div>` : ''}
+      `;
+      showLimitBox('ok', html);
+    } else {
+      // Заголовки не вернулись — ключ рабочий но лимиты не видны
+      if (res.ok || testRes.status === 400) {
+        showLimitBox('ok', '✓ Ключ рабочий. Точный остаток лимита недоступен — попробуй сделать запрос.');
+      } else {
+        showLimitBox('error', `❌ Ошибка: HTTP ${testRes.status}`);
+      }
+    }
+  } catch (e) {
+    showLimitBox('error', `❌ Не удалось подключиться: ${e.message}`);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Проверить лимит';
+}
+
+function showLimitBox(type, html) {
+  const box = document.getElementById('limitBox');
+  box.style.display = 'block';
+  box.innerHTML = html;
+  if (type === 'error') {
+    box.style.background = 'var(--danger-light)';
+    box.style.borderColor = '#f5c6c2';
+    box.style.color = 'var(--danger)';
+  } else {
+    box.style.background = 'var(--bg)';
+    box.style.borderColor = 'var(--border)';
+    box.style.color = 'var(--text)';
+  }
+}
 
 // Init
 loadSavedKey();
