@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расшифровка аудио — Жёлудь</title>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --border-strong: #c8c2b8;
+    --text: #1a1814;
+    --text-muted: #7a7570;
+    --accent: #3d6b4f;
+    --accent-light: #edf4ef;
+    --accent-hover: #2f5540;
+    --danger: #c0392b;
+    --danger-light: #fdf2f1;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+  }
+
+  .logo {
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: normal;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-family: -apple-system, sans-serif;
+  }
+
+  /* API Key */
+  .key-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .key-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .key-input:focus { border-color: var(--accent); }
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-family: -apple-system, sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  .key-status {
+    font-size: 12px;
+    font-family: -apple-system, sans-serif;
+    margin-top: 6px;
+  }
+  .key-status.ok { color: var(--accent); }
+  .key-status.no { color: var(--text-muted); }
+
+  /* Drop Zone */
+  .drop-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .drop-zone.has-file {
+    border-style: solid;
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .drop-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .drop-text {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .drop-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: -apple-system, sans-serif;
+  }
+
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    margin-top: 12px;
+  }
+  .file-info-name {
+    font-size: 14px;
+    font-family: -apple-system, sans-serif;
+    font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-info-size {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: -apple-system, sans-serif;
+  }
+
+  /* Chunks info */
+  .chunks-info {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: -apple-system, sans-serif;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #fff8e6;
+    border-radius: 6px;
+    border: 1px solid #f0d98a;
+    display: none;
+  }
+  .chunks-info.visible { display: block; }
+
+  /* Progress */
+  .progress-area {
+    display: none;
+  }
+  .progress-area.visible { display: block; }
+
+  .progress-label {
+    font-size: 14px;
+    font-family: -apple-system, sans-serif;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .progress-chunks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .chunk-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: -apple-system, sans-serif;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .chunk-dot.done { background: var(--accent); color: white; }
+  .chunk-dot.active { background: var(--accent-light); border: 2px solid var(--accent); color: var(--accent); }
+  .chunk-dot.error { background: var(--danger-light); border: 1px solid var(--danger); color: var(--danger); }
+
+  /* Result */
+  .result-area {
+    display: none;
+  }
+  .result-area.visible { display: block; }
+
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .result-text {
+    width: 100%;
+    min-height: 280px;
+    padding: 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Georgia', serif;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    outline: none;
+  }
+  .result-text:focus { border-color: var(--accent); }
+
+  .result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .error-box {
+    padding: 12px 16px;
+    background: var(--danger-light);
+    border: 1px solid #f5c6c2;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: -apple-system, sans-serif;
+    color: var(--danger);
+    display: none;
+    margin-top: 10px;
+  }
+  .error-box.visible { display: block; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  input[type="file"] { display: none; }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    font-size: 12px;
+    font-family: -apple-system, sans-serif;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+  }
+  .stat strong {
+    color: var(--text);
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 22px; }
+    .card { padding: 1.25rem; }
+    .drop-zone { padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">Пространство Жёлудь</div>
+    <h1>Расшифровка аудио</h1>
+    <div class="subtitle">Загрузи запись — получи текст</div>
+  </header>
+
+  <!-- API Key -->
+  <div class="card">
+    <div class="card-title">Groq API ключ</div>
+    <div class="key-row">
+      <input type="password" class="key-input" id="apiKey" placeholder="gsk_..." autocomplete="off" />
+      <button class="btn btn-ghost" id="toggleKey">Показать</button>
+      <button class="btn btn-ghost" id="saveKey">Сохранить</button>
+    </div>
+    <div class="key-status no" id="keyStatus">Ключ не сохранён</div>
+  </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <div class="card-title">Аудиофайл</div>
+
+    <div class="drop-zone" id="dropZone">
+      <span class="drop-icon">🎙️</span>
+      <div class="drop-text">Перетащи файл сюда или нажми</div>
+      <div class="drop-hint">MP3, M4A, WAV, OGG, WEBM — до нескольких часов</div>
+    </div>
+    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.ogg,.webm,.mp4,.mpeg,.mpga" />
+
+    <div class="file-info" id="fileInfo" style="display:none">
+      <span>🎵</span>
+      <span class="file-info-name" id="fileName"></span>
+      <span class="file-info-size" id="fileSize"></span>
+      <button class="btn btn-ghost" id="clearFile" style="padding:4px 10px;font-size:12px;">✕</button>
+    </div>
+
+    <div class="chunks-info" id="chunksInfo" ></div>
+
+    <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <select id="langSelect" style="padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);outline:none;flex:1;min-width:140px;">
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="hy">🇦🇲 Армянский</option>
+        <option value="auto">Определить автоматически</option>
+      </select>
+      <button class="btn btn-primary" id="startBtn" disabled style="flex:1;min-width:160px;">
+        Расшифровать
+      </button>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card progress-area" id="progressArea">
+    <div class="card-title">Обработка</div>
+    <div class="progress-label">
+      <span id="progressText"><span class="spinner"></span>Подготовка...</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-chunks" id="progressChunks"></div>
+    <div style="font-size:12px;color:var(--text-muted);font-family:-apple-system,sans-serif;margin-top:8px;" id="progressHint"></div>
+  </div>
+
+  <!-- Result -->
+  <div class="card result-area" id="resultArea">
+    <div class="result-header">
+      <div class="card-title" style="margin-bottom:0">Расшифровка</div>
+      <div class="stats-row" id="statsRow"></div>
+    </div>
+    <div style="height:10px;"></div>
+    <textarea class="result-text" id="resultText" spellcheck="false"></textarea>
+    <div class="result-actions">
+      <button class="btn btn-primary" id="copyBtn">Скопировать текст</button>
+      <button class="btn btn-ghost" id="downloadBtn">Скачать .txt</button>
+      <button class="btn btn-ghost" id="newBtn">Новая запись</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const GROQ_API = 'https://api.groq.com/openai/v1/audio/transcriptions';
+const CHUNK_SIZE = 24 * 1024 * 1024; // 24MB (Groq limit 25MB)
+const MODEL = 'whisper-large-v3-turbo';
+
+let currentFile = null;
+let isProcessing = false;
+
+// --- API Key ---
+const apiKeyInput = document.getElementById('apiKey');
+const keyStatus = document.getElementById('keyStatus');
+const toggleKeyBtn = document.getElementById('toggleKey');
+const saveKeyBtn = document.getElementById('saveKey');
+
+function loadSavedKey() {
+  const saved = localStorage.getItem('zholud_groq_key');
+  if (saved) {
+    apiKeyInput.value = saved;
+    keyStatus.textContent = '✓ Ключ сохранён';
+    keyStatus.className = 'key-status ok';
+    updateStartBtn();
+  }
+}
+
+toggleKeyBtn.addEventListener('click', () => {
+  apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
+  toggleKeyBtn.textContent = apiKeyInput.type === 'password' ? 'Показать' : 'Скрыть';
+});
+
+saveKeyBtn.addEventListener('click', () => {
+  const val = apiKeyInput.value.trim();
+  if (val) {
+    localStorage.setItem('zholud_groq_key', val);
+    keyStatus.textContent = '✓ Ключ сохранён в браузере';
+    keyStatus.className = 'key-status ok';
+    updateStartBtn();
+  }
+});
+
+apiKeyInput.addEventListener('input', updateStartBtn);
+
+function getKey() {
+  return apiKeyInput.value.trim() || localStorage.getItem('zholud_groq_key') || '';
+}
+
+// --- File Upload ---
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
+const clearFileBtn = document.getElementById('clearFile');
+const chunksInfo = document.getElementById('chunksInfo');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) setFile(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) setFile(fileInput.files[0]);
+});
+
+function setFile(f) {
+  currentFile = f;
+  dropZone.style.display = 'none';
+  fileInfo.style.display = 'flex';
+  fileName.textContent = f.name;
+  fileSize.textContent = formatSize(f.size);
+
+  const chunks = Math.ceil(f.size / CHUNK_SIZE);
+  if (chunks > 1) {
+    chunksInfo.className = 'chunks-info visible';
+    chunksInfo.textContent = `Файл большой (${formatSize(f.size)}) — будет разбит на ${chunks} части и обработан последовательно`;
+  } else {
+    chunksInfo.className = 'chunks-info';
+  }
+
+  dropZone.classList.remove('has-file');
+  updateStartBtn();
+}
+
+clearFileBtn.addEventListener('click', () => {
+  currentFile = null;
+  fileInput.value = '';
+  dropZone.style.display = '';
+  fileInfo.style.display = 'none';
+  chunksInfo.className = 'chunks-info';
+  updateStartBtn();
+});
+
+function formatSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+function updateStartBtn() {
+  const btn = document.getElementById('startBtn');
+  btn.disabled = !currentFile || !getKey() || isProcessing;
+}
+
+// --- Transcription ---
+document.getElementById('startBtn').addEventListener('click', startTranscription);
+
+async function startTranscription() {
+  if (!currentFile || !getKey() || isProcessing) return;
+
+  isProcessing = true;
+  updateStartBtn();
+  showError('');
+
+  const lang = document.getElementById('langSelect').value;
+  const startTime = Date.now();
+
+  // Show progress
+  document.getElementById('progressArea').className = 'card progress-area visible';
+  document.getElementById('resultArea').className = 'card result-area';
+
+  const chunks = splitFileToChunks(currentFile, CHUNK_SIZE);
+  const totalChunks = chunks.length;
+
+  // Build chunk dots
+  const dotsEl = document.getElementById('progressChunks');
+  dotsEl.innerHTML = '';
+  if (totalChunks > 1) {
+    chunks.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'chunk-dot';
+      dot.textContent = i + 1;
+      dot.id = `dot-${i}`;
+      dotsEl.appendChild(dot);
+    });
+  }
+
+  setProgress(0, `Загружаю часть 1 из ${totalChunks}...`, '');
+
+  let fullText = '';
+  let hasError = false;
+
+  for (let i = 0; i < totalChunks; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    if (dot) dot.className = 'chunk-dot active';
+
+    setProgress(
+      Math.round((i / totalChunks) * 100),
+      `<span class="spinner"></span>Часть ${i + 1} из ${totalChunks}...`,
+      totalChunks > 1 ? `Уже обработано: ${i} из ${totalChunks}` : ''
+    );
+
+    try {
+      const chunkText = await transcribeChunk(chunks[i], lang, i, currentFile.name);
+      fullText += (fullText ? ' ' : '') + chunkText.trim();
+      if (dot) dot.className = 'chunk-dot done';
+      if (dot) dot.textContent = '✓';
+    } catch (err) {
+      if (dot) dot.className = 'chunk-dot error';
+      if (dot) dot.textContent = '✗';
+      showError(`Ошибка на части ${i + 1}: ${err.message}`);
+      hasError = true;
+      break;
+    }
+  }
+
+  setProgress(100, hasError ? 'Завершено с ошибкой' : 'Готово!', '');
+
+  const elapsed = Math.round((Date.now() - startTime) / 1000);
+  const words = fullText.trim().split(/\s+/).filter(Boolean).length;
+  const chars = fullText.trim().length;
+
+  if (fullText.trim()) {
+    showResult(fullText.trim(), elapsed, words, chars, currentFile.name);
+  }
+
+  isProcessing = false;
+  updateStartBtn();
+}
+
+function splitFileToChunks(file, chunkSize) {
+  const chunks = [];
+  let offset = 0;
+  while (offset < file.size) {
+    chunks.push(file.slice(offset, offset + chunkSize));
+    offset += chunkSize;
+  }
+  return chunks;
+}
+
+async function transcribeChunk(blob, lang, index, originalName) {
+  const ext = originalName.split('.').pop() || 'mp3';
+  const chunkFile = new File([blob], `chunk_${index}.${ext}`, { type: blob.type || 'audio/mpeg' });
+
+  const formData = new FormData();
+  formData.append('file', chunkFile);
+  formData.append('model', MODEL);
+  if (lang !== 'auto') formData.append('language', lang);
+  formData.append('response_format', 'text');
+
+  const res = await fetch(GROQ_API, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getKey()}` },
+    body: formData
+  });
+
+  if (!res.ok) {
+    let msg = `HTTP ${res.status}`;
+    try {
+      const err = await res.json();
+      msg = err.error?.message || msg;
+    } catch {}
+    throw new Error(msg);
+  }
+
+  return await res.text();
+}
+
+function setProgress(pct, label, hint) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressText').innerHTML = label;
+  document.getElementById('progressHint').textContent = hint;
+}
+
+function showResult(text, elapsed, words, chars, sourceName) {
+  document.getElementById('resultText').value = text;
+
+  const stats = document.getElementById('statsRow');
+  stats.innerHTML = `
+    <span class="stat"><strong>${words}</strong> слов</span>
+    <span class="stat"><strong>${chars}</strong> символов</span>
+    <span class="stat">за <strong>${elapsed}с</strong></span>
+  `;
+
+  document.getElementById('resultArea').className = 'card result-area visible';
+  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Store for download
+  document.getElementById('downloadBtn')._filename = sourceName.replace(/\.[^.]+$/, '') + '_расшифровка.txt';
+  document.getElementById('downloadBtn')._text = text;
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  if (msg) {
+    el.textContent = msg;
+    el.className = 'error-box visible';
+  } else {
+    el.className = 'error-box';
+  }
+}
+
+// --- Actions ---
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const text = document.getElementById('resultText').value;
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Скопировано ✓';
+    setTimeout(() => btn.textContent = 'Скопировать текст', 2000);
+  } catch {}
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadBtn');
+  const text = btn._text || document.getElementById('resultText').value;
+  const name = btn._filename || 'расшифровка.txt';
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('newBtn').addEventListener('click', () => {
+  currentFile = null;
+  fileInput.value = '';
+  dropZone.style.display = '';
+  fileInfo.style.display = 'none';
+  chunksInfo.className = 'chunks-info';
+  document.getElementById('progressArea').className = 'card progress-area';
+  document.getElementById('resultArea').className = 'card result-area';
+  document.getElementById('errorBox').className = 'error-box';
+  document.getElementById('progressChunks').innerHTML = '';
+  isProcessing = false;
+  updateStartBtn();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Init
+loadSavedKey();
+</script>
+</body>
+</html>
