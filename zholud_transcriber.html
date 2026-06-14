@@ -609,18 +609,76 @@ async function startTranscription() {
       totalChunks > 1 ? `Уже обработано: ${i} из ${totalChunks}` : ''
     );
 
-    try {
-      const chunkText = await transcribeChunk(chunks[i], lang, i, currentFile.name);
-      fullText += (fullText ? ' ' : '') + chunkText.trim();
-      if (dot) dot.className = 'chunk-dot done';
-      if (dot) dot.textContent = '✓';
-    } catch (err) {
-      if (dot) dot.className = 'chunk-dot error';
-      if (dot) dot.textContent = '✗';
-      showError(`Ошибка на части ${i + 1}: ${err.message}`);
-      hasError = true;
-      break;
+    let chunkDone = false;
+    let chunkAttempts = 0;
+    const MAX_CHUNK_ATTEMPTS = 10; // максимум попыток с учётом ожидания лимита
+
+    while (!chunkDone && chunkAttempts < MAX_CHUNK_ATTEMPTS) {
+      chunkAttempts++;
+      try {
+        const chunkText = await transcribeChunk(chunks[i], lang, i, currentFile.name);
+        fullText += (fullText ? ' ' : '') + chunkText.trim();
+        if (dot) dot.className = 'chunk-dot done';
+        if (dot) dot.textContent = '✓';
+        chunkDone = true;
+      } catch (err) {
+        // Проверяем — ошибка лимита с указанием времени ожидания?
+        const waitMatch = err.message.match(/try again in (\d+)m(\d+)s/i) ||
+                          err.message.match(/try again in (\d+)s/i);
+        const isRateLimit = err.message.includes('Rate limit') || 
+                            err.message.includes('rate_limit') ||
+                            (err.message.includes('Limit') && err.message.includes('Used'));
+
+        if (isRateLimit && waitMatch) {
+          // Парсим время ожидания
+          let waitSec;
+          if (waitMatch[2] !== undefined) {
+            // формат Xm Ys
+            waitSec = parseInt(waitMatch[1]) * 60 + parseInt(waitMatch[2]);
+          } else {
+            waitSec = parseInt(waitMatch[1]);
+          }
+          waitSec += 5; // запас 5 секунд
+
+          // Показываем обратный отсчёт
+          const untilTime = new Date(Date.now() + waitSec * 1000);
+          const timeStr = untilTime.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+
+          for (let sec = waitSec; sec > 0; sec--) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            const countdown = m > 0 ? `${m} мин ${s} сек` : `${s} сек`;
+            setProgress(
+              Math.round((i / totalChunks) * 100),
+              `<span class="spinner"></span>Часть ${i + 1} — ожидаю сброса лимита...`,
+              `⏱ Продолжу в ${timeStr} (осталось ${countdown}). Не закрывай страницу.`
+            );
+            await new Promise(r => setTimeout(r, 1000));
+          }
+
+          // После ожидания — пробуем снова
+          if (dot) dot.className = 'chunk-dot active';
+          continue;
+
+        } else if (err.message.includes('401')) {
+          // Неверный ключ — дальше нет смысла
+          if (dot) dot.className = 'chunk-dot error';
+          if (dot) dot.textContent = '✗';
+          showError(`Ошибка ключа: ${err.message}`);
+          hasError = true;
+          break;
+        } else {
+          // Другая ошибка — показываем и останавливаем
+          if (dot) dot.className = 'chunk-dot error';
+          if (dot) dot.textContent = '✗';
+          showError(`Ошибка на части ${i + 1}: ${err.message}`);
+          hasError = true;
+          break;
+        }
+      }
     }
+
+    if (hasError) break;
   }
 
   setProgress(100, hasError ? 'Завершено с ошибкой' : 'Готово!', '');
@@ -648,7 +706,6 @@ function splitFileToChunks(file, chunkSize) {
 }
 
 async function transcribeChunk(blob, lang, index, originalName) {
-  const ext = originalName.split('.').pop() || 'mp3';
   const chunkFile = new File([blob], `chunk_${index}.mp3`, { type: 'audio/mpeg' });
 
   const MAX_RETRIES = 3;
@@ -676,27 +733,29 @@ async function transcribeChunk(blob, lang, index, originalName) {
         msg = err.error?.message || msg;
       } catch {}
 
-      // Не повторяем при ошибках лимита или авторизации
-      if (res.status === 401 || res.status === 429 || msg.includes('Limit')) {
+      // Лимит и авторизацию — пробрасываем наверх без повтора
+      if (res.status === 401 || res.status === 429 || 
+          msg.includes('Rate limit') || msg.includes('Limit')) {
         throw new Error(msg);
       }
 
       lastError = new Error(msg);
 
-      // Пауза перед повтором: 3с, 6с, 12с
+      // 502/503 — ждём и повторяем
       if (attempt < MAX_RETRIES) {
-        const wait = attempt * 3000;
+        const wait = attempt * 4000;
         document.getElementById('progressHint').textContent =
-          `Ошибка ${res.status} — повтор через ${wait/1000}с (попытка ${attempt}/${MAX_RETRIES})...`;
+          `Сервер недоступен — повтор через ${wait/1000}с (попытка ${attempt}/${MAX_RETRIES})...`;
         await new Promise(r => setTimeout(r, wait));
       }
 
     } catch (e) {
-      // Не повторяем при лимитах
-      if (e.message.includes('Limit') || e.message.includes('401')) throw e;
+      // Лимит и авторизацию — сразу наверх
+      if (e.message.includes('Rate limit') || e.message.includes('Limit') || 
+          e.message.includes('401')) throw e;
       lastError = e;
       if (attempt < MAX_RETRIES) {
-        const wait = attempt * 3000;
+        const wait = attempt * 4000;
         document.getElementById('progressHint').textContent =
           `Сетевая ошибка — повтор через ${wait/1000}с (попытка ${attempt}/${MAX_RETRIES})...`;
         await new Promise(r => setTimeout(r, wait));
