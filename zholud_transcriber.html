@@ -17,350 +17,84 @@
     --accent-hover: #2f5540;
     --danger: #c0392b;
     --danger-light: #fdf2f1;
+    --warn-bg: #fff8e6;
+    --warn-border: #f0d98a;
     --radius: 10px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 660px; margin: 0 auto; }
 
-  body {
-    font-family: 'Georgia', serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2rem 1rem;
-  }
+  header { margin-bottom: 2rem; }
+  .logo { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-size: 26px; font-weight: normal; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: var(--text-muted); font-style: italic; }
 
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 1rem; font-family: -apple-system, sans-serif; }
 
-  header {
-    margin-bottom: 2.5rem;
-  }
-
-  .logo {
-    font-family: 'Georgia', serif;
-    font-size: 13px;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  h1 {
-    font-size: 28px;
-    font-weight: normal;
-    color: var(--text);
-    line-height: 1.3;
-    margin-bottom: 6px;
-  }
-
-  .subtitle {
-    font-size: 15px;
-    color: var(--text-muted);
-    font-style: italic;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
-  }
-
-  .card-title {
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    font-family: -apple-system, sans-serif;
-  }
-
-  /* API Key */
-  .key-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .key-input {
-    flex: 1;
-    padding: 10px 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: 'Courier New', monospace;
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color 0.15s;
-  }
+  .key-row { display: flex; gap: 8px; }
+  .key-input { flex: 1; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 13px; font-family: monospace; background: var(--bg); outline: none; }
   .key-input:focus { border-color: var(--accent); }
-
-  .btn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
-    font-family: -apple-system, sans-serif;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: var(--accent-hover); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border-strong);
-  }
-  .btn-ghost:hover { background: var(--bg); }
-
-  .key-status {
-    font-size: 12px;
-    font-family: -apple-system, sans-serif;
-    margin-top: 6px;
-  }
+  .key-status { font-size: 12px; font-family: -apple-system,sans-serif; margin-top: 6px; color: var(--text-muted); }
   .key-status.ok { color: var(--accent); }
-  .key-status.no { color: var(--text-muted); }
 
-  /* Drop Zone */
-  .drop-zone {
-    border: 2px dashed var(--border-strong);
-    border-radius: var(--radius);
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--bg);
-  }
-  .drop-zone:hover, .drop-zone.drag-over {
-    border-color: var(--accent);
-    background: var(--accent-light);
-  }
-  .drop-zone.has-file {
-    border-style: solid;
-    border-color: var(--accent);
-    background: var(--accent-light);
-  }
+  .btn { padding: 9px 16px; border-radius: 8px; border: none; font-size: 14px; font-family: -apple-system,sans-serif; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border-strong); }
+  .btn-ghost:hover { background: var(--bg); }
+  .btn-ghost:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .drop-icon {
-    font-size: 36px;
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  .drop-text {
-    font-size: 16px;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .drop-hint {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-family: -apple-system, sans-serif;
-  }
-
-  .file-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    background: var(--accent-light);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    margin-top: 12px;
-  }
-  .file-info-name {
-    font-size: 14px;
-    font-family: -apple-system, sans-serif;
-    font-weight: 500;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .file-info-size {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-family: -apple-system, sans-serif;
-  }
-
-  /* Chunks info */
-  .chunks-info {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-family: -apple-system, sans-serif;
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: #fff8e6;
-    border-radius: 6px;
-    border: 1px solid #f0d98a;
-    display: none;
-  }
-  .chunks-info.visible { display: block; }
-
-  /* Progress */
-  .progress-area {
-    display: none;
-  }
-  .progress-area.visible { display: block; }
-
-  .progress-label {
-    font-size: 14px;
-    font-family: -apple-system, sans-serif;
-    color: var(--text);
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .progress-bar-bg {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
-    transition: width 0.3s ease;
-    width: 0%;
-  }
-
-  .progress-chunks {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 8px;
-  }
-
-  .chunk-dot {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    background: var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-family: -apple-system, sans-serif;
-    color: var(--text-muted);
-    transition: all 0.2s;
-  }
-  .chunk-dot.done { background: var(--accent); color: white; }
-  .chunk-dot.active { background: var(--accent-light); border: 2px solid var(--accent); color: var(--accent); }
-  .chunk-dot.error { background: var(--danger-light); border: 1px solid var(--danger); color: var(--danger); }
-
-  /* Result */
-  .result-area {
-    display: none;
-  }
-  .result-area.visible { display: block; }
-
-  .result-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .result-text {
-    width: 100%;
-    min-height: 280px;
-    padding: 14px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: 'Georgia', serif;
-    line-height: 1.7;
-    color: var(--text);
-    background: var(--bg);
-    resize: vertical;
-    outline: none;
-  }
-  .result-text:focus { border-color: var(--accent); }
-
-  .result-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-
-  .error-box {
-    padding: 12px 16px;
-    background: var(--danger-light);
-    border: 1px solid #f5c6c2;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: -apple-system, sans-serif;
-    color: var(--danger);
-    display: none;
-    margin-top: 10px;
-  }
-  .error-box.visible { display: block; }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 1.5rem 0;
-  }
-
+  .drop-zone { border: 2px dashed var(--border-strong); border-radius: var(--radius); padding: 2.2rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+  .drop-icon { font-size: 34px; display: block; margin-bottom: 8px; }
+  .drop-text { font-size: 15px; margin-bottom: 4px; }
+  .drop-hint { font-size: 12px; color: var(--text-muted); font-family: -apple-system,sans-serif; }
   input[type="file"] { display: none; }
 
-  .stats-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-  .stat {
-    font-size: 12px;
-    font-family: -apple-system, sans-serif;
-    color: var(--text-muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-  }
-  .stat strong {
-    color: var(--text);
-  }
+  .file-info { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--accent-light); border: 1px solid var(--accent); border-radius: 8px; margin-top: 10px; font-family: -apple-system,sans-serif; }
+  .file-info-name { flex: 1; font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-info-size { font-size: 12px; color: var(--text-muted); }
 
-  .spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
+  .info-box { padding: 8px 12px; border-radius: 6px; font-size: 13px; font-family: -apple-system,sans-serif; margin-top: 8px; }
+  .info-box.warn { background: var(--warn-bg); border: 1px solid var(--warn-border); color: #7a5c00; }
+  .info-box.ok { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); }
+  .info-box.err { background: var(--danger-light); border: 1px solid #f5c6c2; color: var(--danger); }
+
+  .progress-area { display: none; }
+  .progress-area.visible { display: block; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 14px; font-family: -apple-system,sans-serif; margin-bottom: 8px; }
+  .progress-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+  .progress-hint { font-size: 12px; color: var(--text-muted); font-family: -apple-system,sans-serif; min-height: 18px; }
+
+  .result-area { display: none; }
+  .result-area.visible { display: block; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .result-text { width: 100%; min-height: 260px; padding: 14px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 15px; font-family: 'Georgia',serif; line-height: 1.7; background: var(--bg); resize: vertical; outline: none; }
+  .result-text:focus { border-color: var(--accent); }
+  .result-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat { font-size: 11px; font-family: -apple-system,sans-serif; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; }
+  .stat strong { color: var(--text); }
+
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 5px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @media (max-width: 480px) {
-    h1 { font-size: 22px; }
-    .card { padding: 1.25rem; }
-    .drop-zone { padding: 1.5rem 1rem; }
-  }
+  .stage-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .stage { display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: -apple-system,sans-serif; color: var(--text-muted); padding: 4px 0; }
+  .stage.active { color: var(--text); font-weight: 500; }
+  .stage.done { color: var(--accent); }
+  .stage.wait { color: #b07d20; }
+  .stage-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .stage.active .stage-dot { background: var(--accent); }
+  .stage.done .stage-dot { background: var(--accent); }
+  .stage.wait .stage-dot { background: #f0d98a; }
+
+  @media(max-width:480px){h1{font-size:21px}.card{padding:1.1rem}}
 </style>
 </head>
 <body>
@@ -374,55 +108,39 @@
 
   <!-- API Key -->
   <div class="card">
-    <div class="card-title">Groq API ключ</div>
+    <div class="card-title">AssemblyAI API ключ</div>
     <div class="key-row">
-      <input type="password" class="key-input" id="apiKey" placeholder="gsk_..." autocomplete="off" />
+      <input type="password" class="key-input" id="apiKey" placeholder="Вставь ключ..." autocomplete="off" />
       <button class="btn btn-ghost" id="toggleKey">Показать</button>
       <button class="btn btn-ghost" id="saveKey">Сохранить</button>
     </div>
-    <div class="key-status no" id="keyStatus">Ключ не сохранён</div>
-    <div style="margin-top:10px;">
-      <button class="btn btn-ghost" id="checkLimitBtn" style="font-size:13px;padding:8px 14px;">
-        Проверить лимит
-      </button>
-    </div>
-    <div id="limitBox" style="display:none;margin-top:10px;padding:12px 14px;border-radius:8px;font-family:-apple-system,sans-serif;font-size:13px;border:1px solid var(--border);background:var(--bg);">
-    </div>
+    <div class="key-status" id="keyStatus">Ключ не сохранён</div>
   </div>
 
   <!-- Upload -->
   <div class="card">
     <div class="card-title">Аудиофайл</div>
-
     <div class="drop-zone" id="dropZone">
       <span class="drop-icon">🎙️</span>
       <div class="drop-text">Перетащи файл сюда или нажми</div>
-      <div class="drop-hint">MP3, M4A, WAV, OGG, WEBM — до нескольких часов</div>
+      <div class="drop-hint">MP3, M4A, WAV, OGG, WEBM — любой размер</div>
     </div>
-    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.ogg,.webm,.mp4,.mpeg,.mpga" />
-
+    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.ogg,.webm,.mp4,.mpeg" />
     <div class="file-info" id="fileInfo" style="display:none">
       <span>🎵</span>
       <span class="file-info-name" id="fileName"></span>
       <span class="file-info-size" id="fileSize"></span>
-      <button class="btn btn-ghost" id="clearFile" style="padding:4px 10px;font-size:12px;">✕</button>
+      <button class="btn btn-ghost" id="clearFile" style="padding:3px 9px;font-size:12px;">✕</button>
     </div>
-
-    <div class="chunks-info" id="chunksInfo" ></div>
-
-    <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-      <select id="langSelect" style="padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);outline:none;flex:1;min-width:140px;">
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <select id="langSelect" style="padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:-apple-system,sans-serif;background:var(--bg);outline:none;flex:1;min-width:130px;">
         <option value="ru">🇷🇺 Русский</option>
         <option value="en">🇬🇧 English</option>
         <option value="hy">🇦🇲 Армянский</option>
-        <option value="auto">Определить автоматически</option>
       </select>
-      <button class="btn btn-primary" id="startBtn" disabled style="flex:1;min-width:160px;">
-        Расшифровать
-      </button>
+      <button class="btn btn-primary" id="startBtn" disabled style="flex:1;min-width:160px;">Расшифровать</button>
     </div>
-
-    <div class="error-box" id="errorBox"></div>
+    <div id="errorBox" class="info-box err" style="display:none;margin-top:10px;"></div>
   </div>
 
   <!-- Progress -->
@@ -432,513 +150,289 @@
       <span id="progressText"><span class="spinner"></span>Подготовка...</span>
       <span id="progressPct">0%</span>
     </div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-chunks" id="progressChunks"></div>
-    <div style="font-size:12px;color:var(--text-muted);font-family:-apple-system,sans-serif;margin-top:8px;" id="progressHint"></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-hint" id="progressHint"></div>
+    <div class="stage-list" id="stageList"></div>
   </div>
 
   <!-- Result -->
   <div class="card result-area" id="resultArea">
     <div class="result-header">
       <div class="card-title" style="margin-bottom:0">Расшифровка</div>
-      <div class="stats-row" id="statsRow"></div>
+      <div class="stats" id="statsRow"></div>
     </div>
-    <div style="height:10px;"></div>
+    <div style="height:8px"></div>
     <textarea class="result-text" id="resultText" spellcheck="false"></textarea>
     <div class="result-actions">
-      <button class="btn btn-primary" id="copyBtn">Скопировать текст</button>
+      <button class="btn btn-primary" id="copyBtn">Скопировать</button>
       <button class="btn btn-ghost" id="downloadBtn">Скачать .txt</button>
       <button class="btn btn-ghost" id="newBtn">Новая запись</button>
     </div>
   </div>
 
 </div>
-
 <script>
-const GROQ_API = 'https://api.groq.com/openai/v1/audio/transcriptions';
-const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks - reliable for Groq
-const MODEL = 'whisper-large-v3';
-
+const AAI_BASE = 'https://api.assemblyai.com';
 let currentFile = null;
 let isProcessing = false;
 
-// --- API Key ---
+// --- Key ---
 const apiKeyInput = document.getElementById('apiKey');
 const keyStatus = document.getElementById('keyStatus');
-const toggleKeyBtn = document.getElementById('toggleKey');
-const saveKeyBtn = document.getElementById('saveKey');
 
-function loadSavedKey() {
-  const saved = localStorage.getItem('zholud_groq_key');
-  if (saved) {
-    apiKeyInput.value = saved;
-    keyStatus.textContent = '✓ Ключ сохранён';
-    keyStatus.className = 'key-status ok';
-    updateStartBtn();
-  }
-}
-
-toggleKeyBtn.addEventListener('click', () => {
+document.getElementById('toggleKey').addEventListener('click', () => {
   apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
-  toggleKeyBtn.textContent = apiKeyInput.type === 'password' ? 'Показать' : 'Скрыть';
+  document.getElementById('toggleKey').textContent = apiKeyInput.type === 'password' ? 'Показать' : 'Скрыть';
 });
 
-saveKeyBtn.addEventListener('click', () => {
-  const val = apiKeyInput.value.trim();
-  if (val) {
-    localStorage.setItem('zholud_groq_key', val);
+document.getElementById('saveKey').addEventListener('click', () => {
+  const v = apiKeyInput.value.trim();
+  if (v) {
+    localStorage.setItem('zholud_aai_key', v);
     keyStatus.textContent = '✓ Ключ сохранён в браузере';
     keyStatus.className = 'key-status ok';
-    updateStartBtn();
+    updateBtn();
   }
 });
 
-apiKeyInput.addEventListener('input', updateStartBtn);
+apiKeyInput.addEventListener('input', updateBtn);
 
-function getKey() {
-  return apiKeyInput.value.trim() || localStorage.getItem('zholud_groq_key') || '';
+function getKey() { return apiKeyInput.value.trim() || localStorage.getItem('zholud_aai_key') || ''; }
+
+function loadKey() {
+  const k = localStorage.getItem('zholud_aai_key');
+  if (k) {
+    apiKeyInput.value = k;
+    keyStatus.textContent = '✓ Ключ сохранён';
+    keyStatus.className = 'key-status ok';
+    updateBtn();
+  }
 }
 
-// --- File Upload ---
+// --- File ---
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const fileInfo = document.getElementById('fileInfo');
-const fileName = document.getElementById('fileName');
-const fileSize = document.getElementById('fileSize');
-const clearFileBtn = document.getElementById('clearFile');
-const chunksInfo = document.getElementById('chunksInfo');
 
 dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f) setFile(f);
-});
-fileInput.addEventListener('change', () => {
-  if (fileInput.files[0]) setFile(fileInput.files[0]);
-});
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if(e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { if(fileInput.files[0]) setFile(fileInput.files[0]); });
 
 function setFile(f) {
   currentFile = f;
   dropZone.style.display = 'none';
-  fileInfo.style.display = 'flex';
-  fileName.textContent = f.name;
-  fileSize.textContent = formatSize(f.size);
-
-  const chunks = Math.ceil(f.size / CHUNK_SIZE);
-  if (chunks > 1) {
-    chunksInfo.className = 'chunks-info visible';
-    chunksInfo.textContent = `Файл большой (${formatSize(f.size)}) — будет разбит на ${chunks} части и обработан последовательно`;
-  } else {
-    chunksInfo.className = 'chunks-info';
-  }
-
-  dropZone.classList.remove('has-file');
-  updateStartBtn();
+  const fi = document.getElementById('fileInfo');
+  fi.style.display = 'flex';
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('fileSize').textContent = fmtSize(f.size);
+  updateBtn();
 }
 
-clearFileBtn.addEventListener('click', () => {
-  currentFile = null;
-  fileInput.value = '';
+document.getElementById('clearFile').addEventListener('click', () => {
+  currentFile = null; fileInput.value = '';
   dropZone.style.display = '';
-  fileInfo.style.display = 'none';
-  chunksInfo.className = 'chunks-info';
-  updateStartBtn();
+  document.getElementById('fileInfo').style.display = 'none';
+  updateBtn();
 });
 
-function formatSize(bytes) {
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
-  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-}
-
-function updateStartBtn() {
-  const btn = document.getElementById('startBtn');
-  btn.disabled = !currentFile || !getKey() || isProcessing;
-}
+function fmtSize(b) { return b < 1048576 ? (b/1024).toFixed(0)+' KB' : (b/1048576).toFixed(1)+' MB'; }
+function updateBtn() { document.getElementById('startBtn').disabled = !currentFile || !getKey() || isProcessing; }
 
 // --- Transcription ---
 document.getElementById('startBtn').addEventListener('click', startTranscription);
 
-async function startTranscription() {
-  if (!currentFile || !getKey() || isProcessing) return;
-
-  isProcessing = true;
-  updateStartBtn();
-  showError('');
-
-  const lang = document.getElementById('langSelect').value;
-  const startTime = Date.now();
-
-  // Show progress
-  document.getElementById('progressArea').className = 'card progress-area visible';
-  document.getElementById('resultArea').className = 'card result-area';
-
-  const chunks = splitFileToChunks(currentFile, CHUNK_SIZE);
-  const totalChunks = chunks.length;
-
-  // Build chunk dots
-  const dotsEl = document.getElementById('progressChunks');
-  dotsEl.innerHTML = '';
-  if (totalChunks > 1) {
-    chunks.forEach((_, i) => {
-      const dot = document.createElement('div');
-      dot.className = 'chunk-dot';
-      dot.textContent = i + 1;
-      dot.id = `dot-${i}`;
-      dotsEl.appendChild(dot);
-    });
-  }
-
-  setProgress(0, `Загружаю часть 1 из ${totalChunks}...`, '');
-
-  let fullText = '';
-  let hasError = false;
-
-  for (let i = 0; i < totalChunks; i++) {
-    const dot = document.getElementById(`dot-${i}`);
-    if (dot) dot.className = 'chunk-dot active';
-
-    setProgress(
-      Math.round((i / totalChunks) * 100),
-      `<span class="spinner"></span>Часть ${i + 1} из ${totalChunks}...`,
-      totalChunks > 1 ? `Уже обработано: ${i} из ${totalChunks}` : ''
-    );
-
-    let chunkDone = false;
-    let chunkAttempts = 0;
-    const MAX_CHUNK_ATTEMPTS = 10; // максимум попыток с учётом ожидания лимита
-
-    while (!chunkDone && chunkAttempts < MAX_CHUNK_ATTEMPTS) {
-      chunkAttempts++;
-      try {
-        const chunkText = await transcribeChunk(chunks[i], lang, i, currentFile.name);
-        fullText += (fullText ? ' ' : '') + chunkText.trim();
-        if (dot) dot.className = 'chunk-dot done';
-        if (dot) dot.textContent = '✓';
-        chunkDone = true;
-      } catch (err) {
-        // Проверяем — ошибка лимита с указанием времени ожидания?
-        const waitMatch = err.message.match(/try again in (\d+)m(\d+)s/i) ||
-                          err.message.match(/try again in (\d+)s/i);
-        const isRateLimit = err.message.includes('Rate limit') || 
-                            err.message.includes('rate_limit') ||
-                            (err.message.includes('Limit') && err.message.includes('Used'));
-
-        if (isRateLimit && waitMatch) {
-          // Парсим время ожидания
-          let waitSec;
-          if (waitMatch[2] !== undefined) {
-            // формат Xm Ys
-            waitSec = parseInt(waitMatch[1]) * 60 + parseInt(waitMatch[2]);
-          } else {
-            waitSec = parseInt(waitMatch[1]);
-          }
-          waitSec += 5; // запас 5 секунд
-
-          // Показываем обратный отсчёт
-          const untilTime = new Date(Date.now() + waitSec * 1000);
-          const timeStr = untilTime.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
-
-          for (let sec = waitSec; sec > 0; sec--) {
-            const m = Math.floor(sec / 60);
-            const s = sec % 60;
-            const countdown = m > 0 ? `${m} мин ${s} сек` : `${s} сек`;
-            setProgress(
-              Math.round((i / totalChunks) * 100),
-              `<span class="spinner"></span>Часть ${i + 1} — ожидаю сброса лимита...`,
-              `⏱ Продолжу в ${timeStr} (осталось ${countdown}). Не закрывай страницу.`
-            );
-            await new Promise(r => setTimeout(r, 1000));
-          }
-
-          // После ожидания — пробуем снова
-          if (dot) dot.className = 'chunk-dot active';
-          continue;
-
-        } else if (err.message.includes('401')) {
-          // Неверный ключ — дальше нет смысла
-          if (dot) dot.className = 'chunk-dot error';
-          if (dot) dot.textContent = '✗';
-          showError(`Ошибка ключа: ${err.message}`);
-          hasError = true;
-          break;
-        } else {
-          // Другая ошибка — показываем и останавливаем
-          if (dot) dot.className = 'chunk-dot error';
-          if (dot) dot.textContent = '✗';
-          showError(`Ошибка на части ${i + 1}: ${err.message}`);
-          hasError = true;
-          break;
-        }
-      }
-    }
-
-    if (hasError) break;
-  }
-
-  setProgress(100, hasError ? 'Завершено с ошибкой' : 'Готово!', '');
-
-  const elapsed = Math.round((Date.now() - startTime) / 1000);
-  const words = fullText.trim().split(/\s+/).filter(Boolean).length;
-  const chars = fullText.trim().length;
-
-  if (fullText.trim()) {
-    showResult(fullText.trim(), elapsed, words, chars, currentFile.name);
-  }
-
-  isProcessing = false;
-  updateStartBtn();
-}
-
-function splitFileToChunks(file, chunkSize) {
-  const chunks = [];
-  let offset = 0;
-  while (offset < file.size) {
-    chunks.push(file.slice(offset, offset + chunkSize));
-    offset += chunkSize;
-  }
-  return chunks;
-}
-
-async function transcribeChunk(blob, lang, index, originalName) {
-  const chunkFile = new File([blob], `chunk_${index}.mp3`, { type: 'audio/mpeg' });
-
-  const MAX_RETRIES = 3;
-  let lastError = null;
-
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const formData = new FormData();
-      formData.append('file', chunkFile);
-      formData.append('model', MODEL);
-      if (lang !== 'auto') formData.append('language', lang);
-      formData.append('response_format', 'text');
-
-      const res = await fetch(GROQ_API, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${getKey()}` },
-        body: formData
-      });
-
-      if (res.ok) return await res.text();
-
-      let msg = `HTTP ${res.status}`;
-      try {
-        const err = await res.json();
-        msg = err.error?.message || msg;
-      } catch {}
-
-      // Лимит и авторизацию — пробрасываем наверх без повтора
-      if (res.status === 401 || res.status === 429 || 
-          msg.includes('Rate limit') || msg.includes('Limit')) {
-        throw new Error(msg);
-      }
-
-      lastError = new Error(msg);
-
-      // 502/503 — ждём и повторяем
-      if (attempt < MAX_RETRIES) {
-        const wait = attempt * 4000;
-        document.getElementById('progressHint').textContent =
-          `Сервер недоступен — повтор через ${wait/1000}с (попытка ${attempt}/${MAX_RETRIES})...`;
-        await new Promise(r => setTimeout(r, wait));
-      }
-
-    } catch (e) {
-      // Лимит и авторизацию — сразу наверх
-      if (e.message.includes('Rate limit') || e.message.includes('Limit') || 
-          e.message.includes('401')) throw e;
-      lastError = e;
-      if (attempt < MAX_RETRIES) {
-        const wait = attempt * 4000;
-        document.getElementById('progressHint').textContent =
-          `Сетевая ошибка — повтор через ${wait/1000}с (попытка ${attempt}/${MAX_RETRIES})...`;
-        await new Promise(r => setTimeout(r, wait));
-      }
-    }
-  }
-
-  throw lastError || new Error('Не удалось после 3 попыток');
+function setStage(stages, activeIdx) {
+  const list = document.getElementById('stageList');
+  list.innerHTML = stages.map((s, i) => {
+    const cls = i < activeIdx ? 'done' : i === activeIdx ? 'active' : '';
+    const icon = i < activeIdx ? '✓' : i === activeIdx ? '<span class="spinner"></span>' : '·';
+    return `<div class="stage ${cls}"><div class="stage-dot"></div>${icon} ${s}</div>`;
+  }).join('');
 }
 
 function setProgress(pct, label, hint) {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressPct').textContent = pct + '%';
   document.getElementById('progressText').innerHTML = label;
-  document.getElementById('progressHint').textContent = hint;
-}
-
-function showResult(text, elapsed, words, chars, sourceName) {
-  document.getElementById('resultText').value = text;
-
-  const stats = document.getElementById('statsRow');
-  stats.innerHTML = `
-    <span class="stat"><strong>${words}</strong> слов</span>
-    <span class="stat"><strong>${chars}</strong> символов</span>
-    <span class="stat">за <strong>${elapsed}с</strong></span>
-  `;
-
-  document.getElementById('resultArea').className = 'card result-area visible';
-  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Store for download
-  document.getElementById('downloadBtn')._filename = sourceName.replace(/\.[^.]+$/, '') + '_расшифровка.txt';
-  document.getElementById('downloadBtn')._text = text;
+  document.getElementById('progressHint').textContent = hint || '';
 }
 
 function showError(msg) {
   const el = document.getElementById('errorBox');
-  if (msg) {
-    el.textContent = msg;
-    el.className = 'error-box visible';
-  } else {
-    el.className = 'error-box';
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+async function startTranscription() {
+  if (!currentFile || !getKey() || isProcessing) return;
+  isProcessing = true;
+  updateBtn();
+  showError('');
+
+  const lang = document.getElementById('langSelect').value;
+  const startTime = Date.now();
+  const stages = ['Загрузка файла', 'Постановка в очередь', 'Расшифровка', 'Готово'];
+
+  document.getElementById('progressArea').className = 'card progress-area visible';
+  document.getElementById('resultArea').className = 'card result-area';
+
+  try {
+    // 1. Upload file
+    setStage(stages, 0);
+    setProgress(10, '<span class="spinner"></span>Загружаю файл...', 'Это может занять минуту для больших файлов');
+
+    const uploadUrl = await uploadFile(currentFile);
+    setProgress(30, '<span class="spinner"></span>Файл загружен, запускаю расшифровку...', '');
+
+    // 2. Submit transcription
+    setStage(stages, 1);
+    const transcriptId = await submitTranscription(uploadUrl, lang);
+    setProgress(40, '<span class="spinner"></span>В очереди...', '');
+
+    // 3. Poll for result
+    setStage(stages, 2);
+    const result = await pollTranscription(transcriptId);
+
+    // 4. Done
+    setStage(stages, 3);
+    setProgress(100, 'Готово!', '');
+
+    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    const text = result.text || '';
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+
+    showResult(text, elapsed, words, currentFile.name);
+
+  } catch (err) {
+    setProgress(0, 'Ошибка', '');
+    showError(err.message);
   }
+
+  isProcessing = false;
+  updateBtn();
+}
+
+async function uploadFile(file) {
+  const resp = await fetch(`${AAI_BASE}/v1/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': getKey(),
+      'Content-Type': 'application/octet-stream',
+    },
+    body: file
+  });
+  if (!resp.ok) {
+    const e = await resp.json().catch(() => ({}));
+    throw new Error(e.error || `Ошибка загрузки: HTTP ${resp.status}`);
+  }
+  const data = await resp.json();
+  return data.upload_url;
+}
+
+async function submitTranscription(audioUrl, lang) {
+  const langMap = { ru: 'ru', en: 'en', hy: 'hy' };
+  const body = {
+    audio_url: audioUrl,
+    language_code: langMap[lang] || 'ru',
+    punctuate: true,
+    format_text: true,
+  };
+
+  const resp = await fetch(`${AAI_BASE}/v1/transcript`, {
+    method: 'POST',
+    headers: {
+      'Authorization': getKey(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const e = await resp.json().catch(() => ({}));
+    throw new Error(e.error || `Ошибка запуска: HTTP ${resp.status}`);
+  }
+  const data = await resp.json();
+  return data.id;
+}
+
+async function pollTranscription(id) {
+  const POLL_INTERVAL = 4000; // 4 seconds
+  let attempt = 0;
+
+  while (true) {
+    await new Promise(r => setTimeout(r, POLL_INTERVAL));
+    attempt++;
+
+    const resp = await fetch(`${AAI_BASE}/v1/transcript/${id}`, {
+      headers: { 'Authorization': getKey() }
+    });
+    if (!resp.ok) throw new Error(`Ошибка проверки статуса: HTTP ${resp.status}`);
+
+    const data = await resp.json();
+
+    if (data.status === 'completed') {
+      setProgress(95, '<span class="spinner"></span>Получаю результат...', '');
+      return data;
+    }
+
+    if (data.status === 'error') {
+      throw new Error(`Ошибка расшифровки: ${data.error || 'неизвестная ошибка'}`);
+    }
+
+    // Still processing
+    const elapsed = attempt * 4;
+    const pct = Math.min(40 + Math.floor(elapsed / 3), 90);
+    const hint = elapsed < 30
+      ? 'Обычно занимает 1–3 минуты...'
+      : elapsed < 120
+      ? `Обрабатывается уже ${Math.floor(elapsed/60)}м ${elapsed%60}с...`
+      : `Долгая запись — идёт обработка (${Math.floor(elapsed/60)} мин)...`;
+
+    setProgress(pct, `<span class="spinner"></span>Расшифровываю...`, hint);
+  }
+}
+
+function showResult(text, elapsed, words, sourceName) {
+  document.getElementById('resultText').value = text;
+  document.getElementById('statsRow').innerHTML = `
+    <span class="stat"><strong>${words}</strong> слов</span>
+    <span class="stat">за <strong>${elapsed}с</strong></span>
+  `;
+  document.getElementById('resultArea').className = 'card result-area visible';
+  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('downloadBtn')._name = sourceName.replace(/\.[^.]+$/, '') + '_расшифровка.txt';
+  document.getElementById('downloadBtn')._text = text;
 }
 
 // --- Actions ---
 document.getElementById('copyBtn').addEventListener('click', async () => {
-  const text = document.getElementById('resultText').value;
-  try {
-    await navigator.clipboard.writeText(text);
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Скопировано ✓';
-    setTimeout(() => btn.textContent = 'Скопировать текст', 2000);
-  } catch {}
+  await navigator.clipboard.writeText(document.getElementById('resultText').value).catch(() => {});
+  const b = document.getElementById('copyBtn');
+  b.textContent = 'Скопировано ✓';
+  setTimeout(() => b.textContent = 'Скопировать', 2000);
 });
 
 document.getElementById('downloadBtn').addEventListener('click', () => {
-  const btn = document.getElementById('downloadBtn');
-  const text = btn._text || document.getElementById('resultText').value;
-  const name = btn._filename || 'расшифровка.txt';
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
+  const b = document.getElementById('downloadBtn');
+  const blob = new Blob([b._text || document.getElementById('resultText').value], { type: 'text/plain;charset=utf-8' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: b._name || 'расшифровка.txt' });
+  a.click(); URL.revokeObjectURL(a.href);
 });
 
 document.getElementById('newBtn').addEventListener('click', () => {
-  currentFile = null;
-  fileInput.value = '';
+  currentFile = null; fileInput.value = '';
   dropZone.style.display = '';
-  fileInfo.style.display = 'none';
-  chunksInfo.className = 'chunks-info';
+  document.getElementById('fileInfo').style.display = 'none';
   document.getElementById('progressArea').className = 'card progress-area';
   document.getElementById('resultArea').className = 'card result-area';
-  document.getElementById('errorBox').className = 'error-box';
-  document.getElementById('progressChunks').innerHTML = '';
+  document.getElementById('stageList').innerHTML = '';
+  showError('');
   isProcessing = false;
-  updateStartBtn();
+  updateBtn();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// --- Limit Check ---
-document.getElementById('checkLimitBtn').addEventListener('click', checkLimit);
-
-async function checkLimit() {
-  const key = getKey();
-  if (!key) {
-    showLimitBox('error', 'Сначала введи API ключ');
-    return;
-  }
-
-  const btn = document.getElementById('checkLimitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Проверяю...';
-  showLimitBox('loading', '<span class="spinner"></span> Запрашиваю данные...');
-
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/models', {
-      headers: { 'Authorization': `Bearer ${key}` }
-    });
-
-    if (res.status === 401) {
-      showLimitBox('error', '❌ Ключ недействителен — проверь или создай новый на console.groq.com');
-      btn.disabled = false;
-      btn.textContent = 'Проверить лимит';
-      return;
-    }
-
-    // Groq не даёт прямой endpoint для лимитов — делаем тестовый запрос с коротким аудио
-    // Вместо этого используем заголовки ответа от реального запроса
-    // Для проверки лимита отправим пустой запрос и смотрим на заголовки
-    const testRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${key}` },
-      body: new FormData() // пустой — вернёт ошибку но с заголовками лимитов
-    });
-
-    const remaining = testRes.headers.get('x-ratelimit-remaining-audio-seconds');
-    const limit = testRes.headers.get('x-ratelimit-limit-audio-seconds');
-    const reset = testRes.headers.get('x-ratelimit-reset-audio-seconds');
-
-    if (remaining !== null && limit !== null) {
-      const rem = parseInt(remaining);
-      const lim = parseInt(limit);
-      const used = lim - rem;
-      const pct = Math.round((rem / lim) * 100);
-      const remMin = Math.floor(rem / 60);
-      const resetMin = reset ? Math.ceil(parseInt(reset) / 60) : null;
-
-      const color = pct > 50 ? '#3d6b4f' : pct > 20 ? '#b07d20' : '#c0392b';
-      const bar = `<div style="height:6px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden;">
-        <div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.3s;"></div>
-      </div>`;
-
-      let resetText = resetMin ? `Сбросится через ~${resetMin} мин` : '';
-      let html = `
-        <div style="font-weight:500;color:var(--text);margin-bottom:6px;">Лимит аудио (в час)</div>
-        ${bar}
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span>Осталось: <strong style="color:${color}">${remMin} мин (${pct}%)</strong></span>
-          <span style="color:var(--text-muted);">Всего: ${Math.floor(lim/60)} мин</span>
-        </div>
-        ${resetText ? `<div style="color:var(--text-muted);margin-top:5px;">⏱ ${resetText}</div>` : ''}
-        ${rem < 600 ? `<div style="color:#c0392b;margin-top:6px;">⚠️ Меньше 10 минут — подожди сброса перед длинной записью</div>` : ''}
-        ${rem >= 9300 ? `<div style="color:#3d6b4f;margin-top:6px;">✓ Достаточно для записи 2.5 часа</div>` : ''}
-      `;
-      showLimitBox('ok', html);
-    } else {
-      // Заголовки не вернулись — ключ рабочий но лимиты не видны
-      if (res.ok || testRes.status === 400) {
-        showLimitBox('ok', '✓ Ключ рабочий. Точный остаток лимита недоступен — попробуй сделать запрос.');
-      } else {
-        showLimitBox('error', `❌ Ошибка: HTTP ${testRes.status}`);
-      }
-    }
-  } catch (e) {
-    showLimitBox('error', `❌ Не удалось подключиться: ${e.message}`);
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Проверить лимит';
-}
-
-function showLimitBox(type, html) {
-  const box = document.getElementById('limitBox');
-  box.style.display = 'block';
-  box.innerHTML = html;
-  if (type === 'error') {
-    box.style.background = 'var(--danger-light)';
-    box.style.borderColor = '#f5c6c2';
-    box.style.color = 'var(--danger)';
-  } else {
-    box.style.background = 'var(--bg)';
-    box.style.borderColor = 'var(--border)';
-    box.style.color = 'var(--text)';
-  }
-}
-
-// Init
-loadSavedKey();
+loadKey();
 </script>
 </body>
 </html>
